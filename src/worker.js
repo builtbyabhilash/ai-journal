@@ -29,7 +29,7 @@ export default {
   },
 };
 
-const AI_MODEL = "@cf/meta/llama-3.1-8b-instruct";
+const AI_MODEL = "@cf/meta/llama-3.1-8b-instruct-fast";
 
 async function handleAnalyze(request, env) {
   let body;
