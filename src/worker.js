@@ -56,13 +56,19 @@ async function handleAnalyze(request, env) {
     return jsonResponse({ error: "Couldn't reach the AI service.", detail: String(err) }, 502);
   }
 
-  const text = aiResult?.response ?? "";
+  const raw = aiResult?.response;
 
   let parsed;
-  try {
-    parsed = JSON.parse(extractJson(text));
-  } catch {
-    parsed = { raw: text };
+  if (raw && typeof raw === "object") {
+    parsed = raw;
+  } else if (typeof raw === "string") {
+    try {
+      parsed = JSON.parse(extractJson(raw));
+    } catch {
+      parsed = { raw };
+    }
+  } else {
+    parsed = { raw: "" };
   }
 
   return jsonResponse(parsed, 200);
