@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reflect — AI Journal</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header class="topbar">
+  <h1>Reflect</h1>
+  <p class="tagline">Write or speak your day. See it more clearly.</p>
+</header>
+
+<main class="split">
+  <section class="pane pane-write">
+    <div class="pane-header">
+      <h2>Today's entry</h2>
+      <button id="micBtn" class="mic-btn" type="button" title="Speak your entry">
+        <span class="mic-icon">🎙️</span>
+        <span class="mic-label">Speak</span>
+      </button>
+    </div>
+    <textarea id="entryText" placeholder="What happened today? What did you do, feel, struggle with, enjoy? Write freely — or tap Speak and talk it out."></textarea>
+    <div class="write-footer">
+      <span id="micStatus" class="mic-status"></span>
+      <button id="analyzeBtn" class="analyze-btn" type="button">Analyze my day</button>
+    </div>
+  </section>
+
+  <section class="pane pane-insights">
+    <div class="pane-header">
+      <h2>Reflection</h2>
+    </div>
+    <div id="insightsBody" class="insights-body">
+      <p class="empty-state">Your reflection will show up here after you analyze an entry. Nothing is saved anywhere but your own device right now.</p>
+    </div>
+  </section>
+</main>
+
+<script src="js/app.js"></script>
+</body>
+</html>

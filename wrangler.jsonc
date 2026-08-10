@@ -1,0 +1,12 @@
+{
+  "name": "journal-app",
+  "compatibility_date": "2026-08-01",
+  "main": "src/worker.js",
+  "assets": {
+    "directory": "./public",
+    "binding": "ASSETS"
+  },
+  "observability": {
+    "enabled": true
+  }
+}
