@@ -29,6 +29,8 @@ export default {
   },
 };
 
+const AI_MODEL = "@cf/meta/llama-3.1-8b-instruct";
+
 async function handleAnalyze(request, env) {
   let body;
   try {
@@ -42,49 +44,35 @@ async function handleAnalyze(request, env) {
     return jsonResponse({ error: "No journal entry provided." }, 400);
   }
 
-  if (!env.ANTHROPIC_API_KEY) {
-    return jsonResponse(
-      { error: "AI isn't configured yet — missing ANTHROPIC_API_KEY secret." },
-      500
-    );
-  }
-
-  let apiRes;
+  let aiResult;
   try {
-    apiRes = await fetch("https://api.anthropic.com/v1/messages", {
-      method: "POST",
-      headers: {
-        "content-type": "application/json",
-        "x-api-key": env.ANTHROPIC_API_KEY,
-        "anthropic-version": "2023-06-01",
-      },
-      body: JSON.stringify({
-        model: "claude-sonnet-5",
-        max_tokens: 1024,
-        system: SYSTEM_PROMPT,
-        messages: [{ role: "user", content: entry }],
-      }),
+    aiResult = await env.AI.run(AI_MODEL, {
+      messages: [
+        { role: "system", content: SYSTEM_PROMPT },
+        { role: "user", content: entry },
+      ],
     });
   } catch (err) {
     return jsonResponse({ error: "Couldn't reach the AI service.", detail: String(err) }, 502);
   }
 
-  if (!apiRes.ok) {
-    const detail = await apiRes.text();
-    return jsonResponse({ error: "AI request failed.", detail }, 502);
-  }
-
-  const data = await apiRes.json();
-  const text = data.content?.[0]?.text ?? "";
+  const text = aiResult?.response ?? "";
 
   let parsed;
   try {
-    parsed = JSON.parse(text);
+    parsed = JSON.parse(extractJson(text));
   } catch {
     parsed = { raw: text };
   }
 
   return jsonResponse(parsed, 200);
+}
+
+function extractJson(text) {
+  const start = text.indexOf("{");
+  const end = text.lastIndexOf("}");
+  if (start === -1 || end === -1 || end < start) return text;
+  return text.slice(start, end + 1);
 }
 
 function jsonResponse(obj, status = 200) {
